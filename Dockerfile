@@ -2,7 +2,7 @@
 FROM redhat/ubi9-minimal
 
 # Install required packages
-RUN microdnf install -y curl tar gzip jq shadow-utils yum
+RUN microdnf install -y tar gzip jq shadow-utils yum
 
 # Set working directory
 WORKDIR /actions-runner
