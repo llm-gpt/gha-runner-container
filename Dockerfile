@@ -1,5 +1,5 @@
 # Use Red Hat Universal Base Image (UBI) 8-minimal
-FROM redhat/ubi8-minimal
+FROM redhat/ubi9-minimal
 
 # Install required packages
 RUN microdnf install -y curl tar gzip jq shadow-utils yum
