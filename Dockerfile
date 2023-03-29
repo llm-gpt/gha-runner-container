@@ -9,9 +9,18 @@ WORKDIR /actions-runner
 
 # Get latest version of actions-runner
 RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/actions/runner/releases/latest | jq -r '.tag_name') \
-    && curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/download/${LATEST_VERSION}/actions-runner-linux-x64-${LATEST_VERSION#v}.tar.gz \
-    && tar xzf ./actions-runner-linux-x64.tar.gz \
-    && rm actions-runner-linux-x64.tar.gz
+    && ARCH=$(uname -m) \
+    && if [ "${ARCH}" = "x86_64" ]; then \
+        URL="https://github.com/actions/runner/releases/download/${LATEST_VERSION}/actions-runner-linux-x64-${LATEST_VERSION#v}.tar.gz"; \
+       elif [ "${ARCH}" = "aarch64" ]; then \
+        URL="https://github.com/actions/runner/releases/download/${LATEST_VERSION}/actions-runner-linux-arm64-${LATEST_VERSION#v}.tar.gz"; \
+       else \
+        echo "Unsupported architecture: ${ARCH}"; \
+        exit 1; \
+       fi \
+    && curl -o actions-runner.tar.gz -L "${URL}" \
+    && tar xzf ./actions-runner.tar.gz \
+    && rm actions-runner.tar.gz
 
 # Dependencies for the runner
 RUN ./bin/installdependencies.sh
